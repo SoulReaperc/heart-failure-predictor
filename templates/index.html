@@ -23,7 +23,26 @@
             background-color: #000000;
             color: white;
         }
+        .high-risk {
+            color: #ff9999;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 8px;
+        }
 
+        .low-risk {
+            color: #90ee90;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 8px;
+        }
+
+        .error {
+            color: #ffcc00;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 8px;
+        }
         button {
             background: #00e676;
             color: #000;
@@ -55,15 +74,11 @@
     <h1>Heart Failure Risk Predictor</h1>
 
     
-    {% if prediction_text %}
-    {% if prediction_text != "None" %}
-        {% set risk_text = prediction_text.lower() %}
-        <h2 style="color: {% if 'low' in risk_text %}#90ee90{% elif 'high' in risk_text %}#ff9999{% else %}#e0e0e0{% endif %};">
-            {{ prediction_text }}
-        </h2>
+       {% if prediction %}
+        <div class="{{ color_class }}">
+            {{ prediction }}
+        </div>
     {% endif %}
-{% endif %}
-
 
     <!-- TEST FIELD FOR QUICK INPUT 
     <div class="test-input">
