@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Heart Failure Prediction</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #191919;
+            color: #e0e0e0;
+            text-align: center;
+            padding: 40px;
+            margin: 0;
+        }
+        input, button, textarea {
+            padding: 10px;
+            margin: 8px;
+            border-radius: 8px;
+            border: none;
+            width: 250px;
+            font-size: 14px;
+        }
+        input {
+            background-color: #000000;
+            color: white;
+        }
+
+        button {
+            background: #00e676;
+            color: #000;
+            font-weight: bold;
+            border: 2px solid #0499aa;
+            cursor: pointer;
+            transition: 0.6s ease;
+        }
+        button:hover {
+            background: #00000000;
+            color : white;
+        }
+        h1 {
+            color: #00e676;
+        }
+        .form-container {
+            display: inline-block;
+            padding: 30px;
+            border: 2px solid #00e676;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .test-input {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Heart Failure Risk Predictor</h1>
+
+    
+    {% if prediction_text %}
+    {% if prediction_text != "None" %}
+        {% set risk_text = prediction_text.lower() %}
+        <h2 style="color: {% if 'low' in risk_text %}#90ee90{% elif 'high' in risk_text %}#ff9999{% else %}#e0e0e0{% endif %};">
+            {{ prediction_text }}
+        </h2>
+    {% endif %}
+{% endif %}
+
+
+    <!-- TEST FIELD FOR QUICK INPUT 
+    <div class="test-input">
+        <textarea id="testInput" placeholder="Paste test values here (comma separated)"></textarea><br>
+        <button onclick="fillForm()">Fill Form With Test Data</button>
+    </div>-->
+
+    <form method="POST" action="/predict" class="form-container" id="mainForm">
+        <input type="number" step="any" name="age" placeholder="Age" required><br>
+        <input type="number" step="any" name="anaemia" placeholder="Anaemia (0 or 1)" required><br>
+        <input type="number" step="any" name="creatinine_phosphokinase" placeholder="CPK" required><br>
+        <input type="number" step="any" name="diabetes" placeholder="Diabetes (0 or 1)" required><br>
+        <input type="number" step="any" name="ejection_fraction" placeholder="Ejection Fraction" required><br>
+        <input type="number" step="any" name="high_blood_pressure" placeholder="High BP (0 or 1)" required><br>
+        <input type="number" step="any" name="platelets" placeholder="Platelets" required><br>
+        <input type="number" step="any" name="serum_creatinine" placeholder="Serum Creatinine" required><br>
+        <input type="number" step="any" name="serum_sodium" placeholder="Serum Sodium" required><br>
+        <input type="number" step="any" name="sex" placeholder="Sex (0 = F, 1 = M)" required><br>
+        <input type="number" step="any" name="smoking" placeholder="Smoking (0 or 1)" required><br>
+        <input type="number" step="any" name="time" placeholder="Follow-up Time (days)" required><br>
+        <button type="submit">Predict</button>
+    </form>
+
+   
+
+
+ <!-- FOR THE TESING :)
+    <script>
+        function fillForm() {
+            const data = document.getElementById("testInput").value.split(",");
+            const fields = document.querySelectorAll("#mainForm input");
+            if (data.length !== fields.length) {
+                alert("Invalid number of values. Expected " + fields.length);
+                return;
+            }
+            fields.forEach((input, index) => {
+                input.value = data[index].trim();
+            });
+        }
+    </script>-->
+
+</body>
+</html>
