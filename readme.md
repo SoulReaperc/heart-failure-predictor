@@ -35,11 +35,12 @@ The model achieves over **80% accuracy** on the test set.
 ```
 heart-failure-predictor/
 ├── app.py                 # Flask backend
-├── model.pkl             # Trained ML model
-├── notebook.ipynb        # Jupyter Notebook for training
+├── heart_model.pkl        # Trained ML model
+├── scaler.pkl             # Trained ML model
+├── notebook.ipynb         # Jupyter Notebook for training
 ├── templates/
-│   └── index.html        # Frontend HTML form
-└── README.md             # Project documentation
+│   └── index.html         # Frontend HTML form
+└── README.md              # Project documentation
 ```
 
 ## 💻 How to Run
