@@ -1,0 +1,102 @@
+{
+    "Artificial Neural Network (ANN)": {
+        "accuracy": 66.39,
+        "precision": 25.16,
+        "recall": 61.24,
+        "f1_score": 35.67,
+        "roc_auc": 68.06,
+        "mae": 0.3991,
+        "mse": 0.2071,
+        "rmse": 0.4551
+    },
+    "Long Short-Term Memory (LSTM)": {
+        "accuracy": 66.04,
+        "precision": 23.76,
+        "recall": 55.81,
+        "f1_score": 33.33,
+        "roc_auc": 67.51,
+        "mae": 0.4273,
+        "mse": 0.2189,
+        "rmse": 0.4679
+    },
+    "Gated Recurrent Unit (GRU)": {
+        "accuracy": 67.22,
+        "precision": 22.91,
+        "recall": 48.84,
+        "f1_score": 31.19,
+        "roc_auc": 63.5,
+        "mae": 0.3879,
+        "mse": 0.211,
+        "rmse": 0.4593
+    },
+    "Random Forest": {
+        "accuracy": 70.17,
+        "precision": 25.0,
+        "recall": 48.06,
+        "f1_score": 32.89,
+        "roc_auc": 66.78,
+        "mae": 0.4,
+        "mse": 0.1889,
+        "rmse": 0.4346
+    },
+    "XGBoost": {
+        "accuracy": 68.04,
+        "precision": 23.11,
+        "recall": 47.29,
+        "f1_score": 31.04,
+        "roc_auc": 64.28,
+        "mae": 0.3896,
+        "mse": 0.1993,
+        "rmse": 0.4464
+    },
+    "Logistic Regression": {
+        "accuracy": 67.22,
+        "precision": 25.41,
+        "recall": 59.69,
+        "f1_score": 35.65,
+        "roc_auc": 70.05,
+        "mae": 0.4153,
+        "mse": 0.211,
+        "rmse": 0.4593
+    },
+    "Support Vector Machine (SVM)": {
+        "accuracy": 67.69,
+        "precision": 24.38,
+        "recall": 53.49,
+        "f1_score": 33.5,
+        "roc_auc": 67.03,
+        "mae": 0.2441,
+        "mse": 0.124,
+        "rmse": 0.3522
+    },
+    "Gradient Boosting": {
+        "accuracy": 84.2,
+        "precision": 40.0,
+        "recall": 7.75,
+        "f1_score": 12.99,
+        "roc_auc": 66.23,
+        "mae": 0.238,
+        "mse": 0.128,
+        "rmse": 0.3578
+    },
+    "K-Nearest Neighbors": {
+        "accuracy": 84.32,
+        "precision": 40.0,
+        "recall": 6.2,
+        "f1_score": 10.74,
+        "roc_auc": 61.73,
+        "mae": 0.2262,
+        "mse": 0.1317,
+        "rmse": 0.3629
+    },
+    "Decision Tree": {
+        "accuracy": 66.98,
+        "precision": 23.69,
+        "recall": 52.71,
+        "f1_score": 32.69,
+        "roc_auc": 65.96,
+        "mae": 0.4051,
+        "mse": 0.2169,
+        "rmse": 0.4657
+    }
+}

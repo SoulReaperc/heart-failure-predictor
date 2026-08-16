@@ -1,124 +1,1078 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Heart Failure Prediction</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardioCare AI — Cardiovascular Disease Risk Intelligence System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #191919;
-            color: #e0e0e0;
-            text-align: center;
-            padding: 40px;
+        :root {
+            --bg-dark: #070a13;
+            --bg-card: rgba(16, 24, 40, 0.75);
+            --bg-card-hover: rgba(22, 32, 54, 0.9);
+            --bg-input: rgba(10, 16, 30, 0.85);
+            
+            --border-card: rgba(255, 255, 255, 0.08);
+            --border-input: rgba(255, 255, 255, 0.12);
+            --border-focus: #00d2ff;
+            
+            --cyan-glow: #00d2ff;
+            --emerald-glow: #00f5a0;
+            --rose-glow: #ff4b72;
+            --amber-glow: #ffb703;
+
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-        }
-        input, button, textarea {
-            padding: 10px;
-            margin: 8px;
-            border-radius: 8px;
-            border: none;
-            width: 250px;
-            font-size: 14px;
-        }
-        input {
-            background-color: #000000;
-            color: white;
-        }
-        .high-risk {
-            color: #ff9999;
-            font-size: 24px;
-            font-weight: bold;
-            margin: 8px;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        .low-risk {
-            color: #90ee90;
-            font-size: 24px;
-            font-weight: bold;
-            margin: 8px;
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 15%, rgba(0, 210, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 85%, rgba(0, 245, 160, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(255, 75, 114, 0.04) 0%, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .error {
-            color: #ffcc00;
-            font-size: 20px;
-            font-weight: bold;
-            margin: 8px;
+        /* Top Header Navbar */
+        .navbar {
+            background: rgba(10, 15, 29, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-card);
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        button {
-            background: #00e676;
-            color: #000;
-            font-weight: bold;
-            border: 2px solid #0499aa;
-            cursor: pointer;
-            transition: 0.6s ease;
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
         }
-        button:hover {
-            background: #00000000;
-            color : white;
-        }
-        h1 {
-            color: #00e676;
-        }
-        .form-container {
-            display: inline-block;
-            padding: 30px;
-            border: 2px solid #00e676;
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #00d2ff 0%, #0077b6 100%);
             border-radius: 10px;
-            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
         }
-        .test-input {
+
+        .brand-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+        }
+
+        .brand-title span {
+            background: linear-gradient(135deg, #00d2ff, #00f5a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: rgba(16, 24, 40, 0.9);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border-card);
+            gap: 4px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 8px 18px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .tab-btn:hover {
+            color: #ffffff;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(0, 210, 255, 0.2), rgba(0, 245, 160, 0.2));
+            color: #ffffff;
+            border: 1px solid rgba(0, 210, 255, 0.4);
+            box-shadow: 0 0 12px rgba(0, 210, 255, 0.2);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1320px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px;
+            flex: 1;
+        }
+
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, rgba(16, 24, 40, 0.85) 0%, rgba(13, 27, 42, 0.65) 100%);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+        }
+
+        .hero-text h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            background: linear-gradient(90deg, #ffffff 40%, #00d2ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-text p {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+        }
+
+        .preset-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .preset-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-card);
+            color: var(--text-secondary);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .preset-chip:hover {
+            background: rgba(0, 210, 255, 0.15);
+            border-color: var(--cyan-glow);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        /* 2-Column Main Layout */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1.25fr 0.95fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Form Grid */
+        .form-sections {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
             margin-bottom: 20px;
+        }
+
+        .section-block {
+            background: rgba(10, 16, 30, 0.6);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .section-badge {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--cyan-glow);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .field-group {
+            margin-bottom: 10px;
+        }
+
+        .field-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        label span {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-input);
+            border-radius: 8px;
+            padding: 9px 12px;
+            color: #ffffff;
+            font-size: 0.88rem;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input[type="number"]:focus, select:focus {
+            border-color: var(--cyan-glow);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.25);
+            background: rgba(10, 16, 30, 1);
+        }
+
+        /* Submit Bar */
+        .submit-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-card);
+        }
+
+        .model-picker-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .model-picker-wrap label {
+            margin-bottom: 0;
+            font-size: 0.84rem;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .model-picker-wrap select {
+            min-width: 240px;
+            height: 40px;
+        }
+
+        .btn-evaluate-main {
+            background: linear-gradient(135deg, #0077b6 0%, #00d2ff 100%);
+            color: #ffffff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-evaluate-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 210, 255, 0.5);
+            background: linear-gradient(135deg, #023e8a 0%, #0096c7 100%);
+        }
+
+        /* Right Column: Diagnostic Report Result Card */
+        .report-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 24px;
+            position: sticky;
+            top: 80px;
+        }
+
+        .report-panel.low-risk {
+            border-color: rgba(0, 245, 160, 0.4);
+            background: linear-gradient(180deg, rgba(16, 24, 40, 0.9) 0%, rgba(0, 245, 160, 0.08) 100%);
+            box-shadow: 0 0 25px rgba(0, 245, 160, 0.15);
+        }
+
+        .report-panel.moderate-risk {
+            border-color: rgba(255, 183, 3, 0.4);
+            background: linear-gradient(180deg, rgba(16, 24, 40, 0.9) 0%, rgba(255, 183, 3, 0.08) 100%);
+            box-shadow: 0 0 25px rgba(255, 183, 3, 0.15);
+        }
+
+        .report-panel.high-risk {
+            border-color: rgba(255, 75, 114, 0.4);
+            background: linear-gradient(180deg, rgba(16, 24, 40, 0.9) 0%, rgba(255, 75, 114, 0.1) 100%);
+            box-shadow: 0 0 25px rgba(255, 75, 114, 0.2);
+        }
+
+        .report-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        .report-heading-box span {
+            font-size: 0.74rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .report-heading-box h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .low-risk .report-heading-box h3 { color: var(--emerald-glow); }
+        .moderate-risk .report-heading-box h3 { color: var(--amber-glow); }
+        .high-risk .report-heading-box h3 { color: var(--rose-glow); }
+
+        /* Radial Gauge / Score Box */
+        .score-display {
+            background: rgba(10, 16, 30, 0.9);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 10px 18px;
+            text-align: center;
+        }
+
+        .score-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .low-risk .score-val { color: var(--emerald-glow); }
+        .moderate-risk .score-val { color: var(--amber-glow); }
+        .high-risk .score-val { color: var(--rose-glow); }
+
+        .score-caption {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 3px;
+        }
+
+        .summary-box {
+            background: rgba(10, 16, 30, 0.6);
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            margin-bottom: 18px;
+        }
+
+        .alerts-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .alerts-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .alert-card {
+            background: rgba(10, 16, 30, 0.7);
+            border: 1px solid var(--border-card);
+            border-left: 3px solid var(--amber-glow);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+
+        .alert-card.high {
+            border-left-color: var(--rose-glow);
+        }
+
+        .alert-header {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .alert-desc {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Empty / Idle State */
+        .idle-card {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .idle-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            opacity: 0.8;
+        }
+
+        .idle-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .idle-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        /* Benchmark Tab Styling */
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        .benchmark-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .benchmark-table th {
+            background: rgba(10, 16, 30, 0.9);
+            color: var(--cyan-glow);
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        .benchmark-table td {
+            padding: 14px 18px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+        }
+
+        .benchmark-table tr:hover td {
+            background: rgba(0, 210, 255, 0.04);
+            color: #ffffff;
+        }
+
+        .benchmark-table tr.champion td {
+            background: rgba(0, 210, 255, 0.08) !important;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .benchmark-table tr.active-engine td {
+            background: rgba(0, 245, 160, 0.09) !important;
+            border-top: 1px solid rgba(0, 245, 160, 0.3);
+            border-bottom: 1px solid rgba(0, 245, 160, 0.3);
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.76rem;
+            margin-left: 6px;
+            letter-spacing: 0.3px;
+        }
+        .pill-green { background: rgba(0, 245, 160, 0.15); color: var(--emerald-glow); }
+        .pill-blue { background: rgba(0, 210, 255, 0.15); color: var(--cyan-glow); }
+        .pill-gold { background: rgba(255, 183, 3, 0.15); color: #ffb703; border: 1px solid rgba(255, 183, 3, 0.3); }
+        .pill-active { background: rgba(0, 245, 160, 0.15); color: #00f5a0; border: 1px solid rgba(0, 245, 160, 0.35); }
+
+        /* Charts Showcase Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .gallery-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .gallery-card p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .gallery-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-card);
+            transition: transform 0.25s ease;
+        }
+
+        .gallery-card img:hover {
+            transform: scale(1.015);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 15, 29, 0.85);
+            border-top: 1px solid var(--border-card);
+            padding: 16px 24px;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+
+        @media (max-width: 960px) {
+            .workspace-grid { grid-template-columns: 1fr; }
+            .form-sections { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .navbar { flex-direction: column; gap: 10px; }
         }
     </style>
 </head>
 <body>
-    <h1>Heart Failure Risk Predictor</h1>
 
-    
-       {% if prediction %}
-        <div class="{{ color_class }}">
-            {{ prediction }}
-        </div>
-    {% endif %}
+    <!-- Header Navbar -->
+    <header class="navbar">
+        <a href="/" class="nav-brand">
+            <div class="brand-logo">🫀</div>
+            <div class="brand-title">Cardio<span>Care AI</span></div>
+        </a>
 
-    <!-- TEST FIELD FOR QUICK INPUT 
-    <div class="test-input">
-        <textarea id="testInput" placeholder="Paste test values here (comma separated)"></textarea><br>
-        <button onclick="fillForm()">Fill Form With Test Data</button>
-    </div>-->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" onclick="switchView('assessment', this)">
+                🩺 Patient Risk Assessment
+            </button>
+            <button class="tab-btn" onclick="switchView('benchmarks', this)">
+                📊 Model Benchmarks
+            </button>
+            <button class="tab-btn" onclick="switchView('diagnostics', this)">
+                📈 Diagnostic Plots
+            </button>
+            <button class="tab-btn" onclick="switchView('protocol', this)">
+                🏛️ Framingham Protocol
+            </button>
+        </nav>
+    </header>
 
-    <form method="POST" action="/predict" class="form-container" id="mainForm">
-        <input type="number" step="any" name="age" placeholder="Age" required><br>
-        <input type="number" step="any" name="anaemia" placeholder="Anaemia (0 or 1)" required><br>
-        <input type="number" step="any" name="creatinine_phosphokinase" placeholder="CPK" required><br>
-        <input type="number" step="any" name="diabetes" placeholder="Diabetes (0 or 1)" required><br>
-        <input type="number" step="any" name="ejection_fraction" placeholder="Ejection Fraction" required><br>
-        <input type="number" step="any" name="high_blood_pressure" placeholder="High BP (0 or 1)" required><br>
-        <input type="number" step="any" name="platelets" placeholder="Platelets" required><br>
-        <input type="number" step="any" name="serum_creatinine" placeholder="Serum Creatinine" required><br>
-        <input type="number" step="any" name="serum_sodium" placeholder="Serum Sodium" required><br>
-        <input type="number" step="any" name="sex" placeholder="Sex (0 = F, 1 = M)" required><br>
-        <input type="number" step="any" name="smoking" placeholder="Smoking (0 or 1)" required><br>
-        <input type="number" step="any" name="time" placeholder="Follow-up Time (days)" required><br>
-        <button type="submit">Predict</button>
-    </form>
+    <main class="container">
 
-   
+        <!-- TAB 1: PATIENT ASSESSMENT -->
+        <section id="tab-assessment" class="tab-pane active">
+            
+            <!-- Quick Preset Banner -->
+            <div class="hero-banner">
+                <div class="hero-text">
+                    <h2>Cardiovascular Clinical Decision Support</h2>
+                    <p>Evidence-based 10-year Coronary Heart Disease risk evaluation powered by PyTorch Deep Learning & Baseline ML.</p>
+                </div>
+                <div class="preset-container">
+                    <button type="button" class="preset-chip" onclick="applyPreset('healthy')">🟢 Routine Screening</button>
+                    <button type="button" class="preset-chip" onclick="applyPreset('borderline')">🟡 Borderline Profile</button>
+                    <button type="button" class="preset-chip" onclick="applyPreset('high')">🔴 Clinical High-Risk</button>
+                    <button type="button" class="preset-chip" onclick="clearForm()">🔄 Reset</button>
+                </div>
+            </div>
 
+            <div class="workspace-grid">
+                
+                <!-- Left: Clinical Form -->
+                <div class="glass-card">
+                    <form id="cardiac-form" action="/predict" method="POST">
+                        <div class="form-sections">
+                            
+                            <!-- 1. Demographics -->
+                            <div class="section-block">
+                                <div class="section-badge">👤 Patient Demographics</div>
+                                <div class="field-row">
+                                    <div class="field-group">
+                                        <label for="age">Age <span>(Years)</span></label>
+                                        <input type="number" id="age" name="age" min="20" max="100" value="{{ form_data.age if form_data else '48' }}" required>
+                                    </div>
+                                    <div class="field-group">
+                                        <label for="male">Biological Sex</label>
+                                        <select id="male" name="male">
+                                            <option value="1" {% if form_data and form_data.male == 1.0 %}selected{% endif %}>Male</option>
+                                            <option value="0" {% if form_data and form_data.male == 0.0 %}selected{% endif %}>Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="field-group">
+                                    <label for="education">Education Level</label>
+                                    <select id="education" name="education">
+                                        <option value="1" {% if form_data and form_data.education == 1.0 %}selected{% endif %}>Some High School</option>
+                                        <option value="2" {% if form_data and form_data.education == 2.0 %}selected{% endif %}>High School Graduate</option>
+                                        <option value="3" {% if form_data and form_data.education == 3.0 %}selected{% endif %}>College / Vocational</option>
+                                        <option value="4" {% if form_data and form_data.education == 4.0 %}selected{% endif %}>University Degree</option>
+                                    </select>
+                                </div>
+                            </div>
 
- <!-- FOR THE TESING :)
+                            <!-- 2. Lifestyle & Body Mass -->
+                            <div class="section-block">
+                                <div class="section-badge">🫀 Lifestyle & BMI</div>
+                                <div class="field-row">
+                                    <div class="field-group">
+                                        <label for="currentSmoker">Smoker</label>
+                                        <select id="currentSmoker" name="currentSmoker" onchange="toggleSmokerField(this.value)">
+                                            <option value="0" {% if form_data and form_data.currentSmoker == 0.0 %}selected{% endif %}>Non-Smoker</option>
+                                            <option value="1" {% if form_data and form_data.currentSmoker == 1.0 %}selected{% endif %}>Active Smoker</option>
+                                        </select>
+                                    </div>
+                                    <div class="field-group">
+                                        <label for="cigsPerDay">Cigs / Day</label>
+                                        <input type="number" id="cigsPerDay" name="cigsPerDay" min="0" max="90" value="{{ form_data.cigsPerDay if form_data else '0' }}" required>
+                                    </div>
+                                </div>
+                                <div class="field-group">
+                                    <label for="BMI">Body Mass Index <span>(kg/m²)</span></label>
+                                    <input type="number" id="BMI" name="BMI" step="0.1" min="12" max="60" value="{{ form_data.BMI if form_data else '25.3' }}" required>
+                                </div>
+                            </div>
+
+                            <!-- 3. Medical History -->
+                            <div class="section-block">
+                                <div class="section-badge">📋 Medical History</div>
+                                <div class="field-row">
+                                    <div class="field-group">
+                                        <label for="BPMeds">BP Medication</label>
+                                        <select id="BPMeds" name="BPMeds">
+                                            <option value="0" {% if form_data and form_data.BPMeds == 0.0 %}selected{% endif %}>No</option>
+                                            <option value="1" {% if form_data and form_data.BPMeds == 1.0 %}selected{% endif %}>Yes</option>
+                                        </select>
+                                    </div>
+                                    <div class="field-group">
+                                        <label for="prevalentHyp">Hypertension</label>
+                                        <select id="prevalentHyp" name="prevalentHyp">
+                                            <option value="0" {% if form_data and form_data.prevalentHyp == 0.0 %}selected{% endif %}>No</option>
+                                            <option value="1" {% if form_data and form_data.prevalentHyp == 1.0 %}selected{% endif %}>Yes</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="field-row">
+                                    <div class="field-group">
+                                        <label for="prevalentStroke">Prior Stroke</label>
+                                        <select id="prevalentStroke" name="prevalentStroke">
+                                            <option value="0" {% if form_data and form_data.prevalentStroke == 0.0 %}selected{% endif %}>No</option>
+                                            <option value="1" {% if form_data and form_data.prevalentStroke == 1.0 %}selected{% endif %}>Yes</option>
+                                        </select>
+                                    </div>
+                                    <div class="field-group">
+                                        <label for="diabetes">Diabetes</label>
+                                        <select id="diabetes" name="diabetes">
+                                            <option value="0" {% if form_data and form_data.diabetes == 0.0 %}selected{% endif %}>No</option>
+                                            <option value="1" {% if form_data and form_data.diabetes == 1.0 %}selected{% endif %}>Yes</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4. Serum Labs & Vitals -->
+                            <div class="section-block">
+                                <div class="section-badge">🧪 Labs & Blood Pressure</div>
+                                <div class="field-row">
+                                    <div class="field-group">
+                                        <label for="sysBP">Systolic BP <span>(mmHg)</span></label>
+                                        <input type="number" id="sysBP" name="sysBP" min="70" max="260" value="{{ form_data.sysBP if form_data else '122' }}" required>
+                                    </div>
+                                    <div class="field-group">
+                                        <label for="diaBP">Diastolic BP <span>(mmHg)</span></label>
+                                        <input type="number" id="diaBP" name="diaBP" min="40" max="160" value="{{ form_data.diaBP if form_data else '80' }}" required>
+                                    </div>
+                                </div>
+                                <div class="field-row">
+                                    <div class="field-group">
+                                        <label for="totChol">Cholesterol <span>(mg/dL)</span></label>
+                                        <input type="number" id="totChol" name="totChol" min="80" max="600" value="{{ form_data.totChol if form_data else '210' }}" required>
+                                    </div>
+                                    <div class="field-group">
+                                        <label for="glucose">Glucose <span>(mg/dL)</span></label>
+                                        <input type="number" id="glucose" name="glucose" min="40" max="500" value="{{ form_data.glucose if form_data else '82' }}" required>
+                                    </div>
+                                </div>
+                                <div class="field-group">
+                                    <label for="heartRate">Heart Rate <span>(bpm)</span></label>
+                                    <input type="number" id="heartRate" name="heartRate" min="35" max="220" value="{{ form_data.heartRate if form_data else '72' }}" required>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Action Bar -->
+                        <div class="submit-bar">
+                            <div class="model-picker-wrap">
+                                <label for="model_choice">Inference Engine:</label>
+                                <select id="model_choice" name="model_choice">
+                                    <option value="ann" {% if not selected_model or selected_model == 'ann' %}selected{% endif %}>🧠 PyTorch Artificial Neural Network (ANN)</option>
+                                    <option value="lstm" {% if selected_model == 'lstm' %}selected{% endif %}>🔁 PyTorch Long Short-Term Memory (LSTM)</option>
+                                    <option value="gru" {% if selected_model == 'gru' %}selected{% endif %}>⚡ PyTorch Gated Recurrent Unit (GRU)</option>
+                                    <option value="rf" {% if selected_model == 'rf' %}selected{% endif %}>🌲 Random Forest Classifier (ML Baseline)</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn-evaluate-main">
+                                ⚡ Analyze Patient Risk
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- Right: Diagnostic Report Results -->
+                <div>
+                    {% if prediction %}
+                    <div class="report-panel {{ color_class }}">
+                        <div class="report-top-row">
+                            <div class="report-heading-box">
+                                <span>Clinical Assessment &bull; {{ used_model }}</span>
+                                <h3>{{ prediction }}</h3>
+                            </div>
+                            {% if probability is not none %}
+                            <div class="score-display">
+                                <div class="score-val">{{ probability }}%</div>
+                                <div class="score-caption">10-Yr Risk</div>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="summary-box">
+                            {{ risk_summary }}
+                        </div>
+
+                        {% if risk_factors %}
+                        <div class="alerts-title">⚠️ Clinical Risk Indicators:</div>
+                        <div class="alerts-stack">
+                            {% for factor in risk_factors %}
+                            <div class="alert-card {{ factor.severity }}">
+                                <div class="alert-header">{{ factor.factor }}</div>
+                                <div class="alert-desc">{{ factor.desc }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <!-- Idle Welcome State -->
+                    <div class="glass-card idle-card">
+                        <div class="idle-icon">🫀</div>
+                        <h3 class="idle-title">Ready for Clinical Assessment</h3>
+                        <p class="idle-text">
+                            Select a sample patient case above or input parameters to calculate the 10-year coronary risk probability using the selected neural engine.
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- TAB 2: MODEL BENCHMARKS -->
+        <section id="tab-benchmarks" class="tab-pane">
+            <div class="glass-card">
+                <h3 style="font-family: 'Outfit'; font-size: 1.3rem; margin-bottom: 6px;">Multi-Model Benchmark Matrix (Framingham Cohort, n=848)</h3>
+                <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 20px;">
+                    Standardized evaluation comparing Deep Learning architectures against classical ML baselines.
+                </p>
+
+                <div class="table-wrap">
+                    <table class="benchmark-table">
+                        <thead>
+                            <tr>
+                                <th>Model Architecture</th>
+                                <th>Accuracy</th>
+                                <th>Sensitivity / Recall</th>
+                                <th>Precision</th>
+                                <th>F1-Score</th>
+                                <th>ROC-AUC</th>
+                                <th>MAE</th>
+                                <th>MSE</th>
+                                <th>RMSE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if metrics %}
+                                {% for name, m in metrics.items() %}
+                                {% set is_top = ('Artificial Neural Network' in name) %}
+                                {% set is_active = (selected_model == 'ann' and 'Artificial Neural Network' in name) or 
+                                                   (selected_model == 'lstm' and 'Long Short-Term Memory' in name) or 
+                                                   (selected_model == 'gru' and 'Gated Recurrent Unit' in name) or 
+                                                   (selected_model == 'rf' and 'Random Forest' in name) %}
+                                <tr class="{% if is_top %}champion{% endif %} {% if is_active %}active-engine{% endif %}">
+                                    <td>
+                                        <strong>{{ name }}</strong>
+                                        {% if is_top %}
+                                        <span class="badge-pill pill-gold">🏆 Top Best Model</span>
+                                        {% endif %}
+                                        {% if is_active %}
+                                        <span class="badge-pill pill-active">⚡ Active In-Use</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ m.accuracy }}%</td>
+                                    <td>
+                                        <span class="badge-pill pill-green">{{ m.recall }}%</span>
+                                    </td>
+                                    <td>{{ m.precision }}%</td>
+                                    <td>{{ m.f1_score }}%</td>
+                                    <td>
+                                        <span class="badge-pill pill-blue">{{ m.roc_auc }}%</span>
+                                    </td>
+                                    <td style="color: #cbd5e1; font-family: monospace;">{{ m.mae if m.mae is defined else 'N/A' }}</td>
+                                    <td style="color: #cbd5e1; font-family: monospace;">{{ m.mse if m.mse is defined else 'N/A' }}</td>
+                                    <td style="color: #cbd5e1; font-family: monospace;">{{ m.rmse if m.rmse is defined else 'N/A' }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: DIAGNOSTIC PLOTS -->
+        <section id="tab-diagnostics" class="tab-pane">
+            <div class="gallery-grid">
+                <div class="gallery-card">
+                    <h4>Multi-Model ROC Curves</h4>
+                    <p>Comparison of Sensitivity vs Specificity across discrimination thresholds.</p>
+                    <img src="/static/roc_curves.png" alt="ROC Curves">
+                </div>
+
+                <div class="gallery-card">
+                    <h4>Deep Learning Training Loss Dynamics</h4>
+                    <p>Training vs. validation loss curve across 60 epochs for ANN, LSTM, and GRU.</p>
+                    <img src="/static/ann_loss_curve.png" alt="Loss Curve">
+                </div>
+
+                <div class="gallery-card">
+                    <h4>Clinical Risk Factor Importance</h4>
+                    <p>Predictive contribution of individual patient biometric parameters.</p>
+                    <img src="/static/feature_importance.png" alt="Feature Importance">
+                </div>
+
+                <div class="gallery-card">
+                    <h4>Benchmark Metrics Summary</h4>
+                    <p>Side-by-side performance bar chart across standard evaluation metrics.</p>
+                    <img src="/static/model_comparison.png" alt="Model Comparison">
+                </div>
+
+                <div class="gallery-card" style="grid-column: 1 / -1;">
+                    <h4>Test Cohort Confusion Matrix Matrix</h4>
+                    <p>True vs. predicted classification counts on the held-out test cohort (n=848).</p>
+                    <img src="/static/confusion_matrices.png" alt="Confusion Matrices">
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: PROTOCOL & DATASET -->
+        <section id="tab-protocol" class="tab-pane">
+            <div class="glass-card" style="line-height: 1.6; font-size: 0.92rem;">
+                <h3 style="font-family: 'Outfit'; font-size: 1.3rem; margin-bottom: 14px;">Clinical Study Protocol & Deep Learning Framework</h3>
+                <p style="margin-bottom: 12px; color: var(--text-secondary);">
+                    <strong>Framingham Heart Study:</strong> One of the most authoritative prospective cardiovascular epidemiological studies in medical history. The model uses 15 clinical parameters across 4,240 patient records to estimate 10-year risk of developing Coronary Heart Disease (`TenYearCHD`).
+                </p>
+                <p style="margin-bottom: 12px; color: var(--text-secondary);">
+                    <strong>PyTorch Neural Network Architecture:</strong> 4 dense layers (15 → 64 → 32 → 16 → 1) with Batch Normalization, Dropout ($0.3/0.2/0.1$), and weighted Binary Cross-Entropy Loss ($w_{\text{pos}} = 5.59$) to overcome the natural 84.8% vs 15.2% class imbalance and maximize clinical screening sensitivity.
+                </p>
+                <p style="color: var(--text-secondary);">
+                    <strong>Clinical Guidelines Integration:</strong> Risk alerts evaluate blood pressure against standard AHA/ACC 2024 hypertension classifications, lipid risk criteria ($>240$ mg/dL), and glycemic thresholds ($>126$ mg/dL).
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        CardioCare AI &bull; Deep Learning Cardiovascular Risk Intelligence &bull; Built with PyTorch, Scikit-learn, and Flask
+    </footer>
+
     <script>
-        function fillForm() {
-            const data = document.getElementById("testInput").value.split(",");
-            const fields = document.querySelectorAll("#mainForm input");
-            if (data.length !== fields.length) {
-                alert("Invalid number of values. Expected " + fields.length);
-                return;
-            }
-            fields.forEach((input, index) => {
-                input.value = data[index].trim();
-            });
-        }
-    </script>-->
+        function switchView(tabName, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
 
+            btn.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        function toggleSmokerField(val) {
+            const cigs = document.getElementById('cigsPerDay');
+            if (val === "0") {
+                cigs.value = "0";
+            } else if (cigs.value === "0") {
+                cigs.value = "10";
+            }
+        }
+
+        function applyPreset(type) {
+            if (type === 'healthy') {
+                document.getElementById('age').value = 35;
+                document.getElementById('male').value = "0";
+                document.getElementById('education').value = "4";
+                document.getElementById('currentSmoker').value = "0";
+                document.getElementById('cigsPerDay').value = "0";
+                document.getElementById('BMI').value = "21.8";
+                document.getElementById('BPMeds').value = "0";
+                document.getElementById('prevalentHyp').value = "0";
+                document.getElementById('prevalentStroke').value = "0";
+                document.getElementById('diabetes').value = "0";
+                document.getElementById('sysBP').value = "115";
+                document.getElementById('diaBP').value = "75";
+                document.getElementById('totChol').value = "175";
+                document.getElementById('glucose').value = "82";
+                document.getElementById('heartRate').value = "68";
+            } else if (type === 'borderline') {
+                document.getElementById('age').value = 52;
+                document.getElementById('male').value = "1";
+                document.getElementById('education').value = "2";
+                document.getElementById('currentSmoker').value = "1";
+                document.getElementById('cigsPerDay').value = "15";
+                document.getElementById('BMI').value = "27.8";
+                document.getElementById('BPMeds').value = "0";
+                document.getElementById('prevalentHyp').value = "1";
+                document.getElementById('prevalentStroke').value = "0";
+                document.getElementById('diabetes').value = "0";
+                document.getElementById('sysBP').value = "138";
+                document.getElementById('diaBP').value = "88";
+                document.getElementById('totChol').value = "235";
+                document.getElementById('glucose').value = "105";
+                document.getElementById('heartRate').value = "78";
+            } else if (type === 'high') {
+                document.getElementById('age').value = 62;
+                document.getElementById('male').value = "1";
+                document.getElementById('education').value = "1";
+                document.getElementById('currentSmoker').value = "1";
+                document.getElementById('cigsPerDay').value = "25";
+                document.getElementById('BMI').value = "32.5";
+                document.getElementById('BPMeds').value = "1";
+                document.getElementById('prevalentHyp').value = "1";
+                document.getElementById('prevalentStroke').value = "0";
+                document.getElementById('diabetes').value = "1";
+                document.getElementById('sysBP').value = "165";
+                document.getElementById('diaBP').value = "102";
+                document.getElementById('totChol').value = "280";
+                document.getElementById('glucose').value = "175";
+                document.getElementById('heartRate').value = "90";
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('cardiac-form').reset();
+        }
+    </script>
 </body>
 </html>
