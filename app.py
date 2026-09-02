@@ -23,15 +23,14 @@ class CardiovascularANN(nn.Module):
             nn.Linear(input_dim, 64),
             nn.BatchNorm1d(64),
             nn.ReLU(),
-            nn.Dropout(0.3),
+            nn.Dropout(0.25),
             nn.Linear(64, 32),
             nn.BatchNorm1d(32),
             nn.ReLU(),
-            nn.Dropout(0.2),
+            nn.Dropout(0.15),
             nn.Linear(32, 16),
             nn.BatchNorm1d(16),
             nn.ReLU(),
-            nn.Dropout(0.1),
             nn.Linear(16, 1)
         )
     def forward(self, x):
@@ -45,12 +44,11 @@ class CardiovascularLSTM(nn.Module):
             hidden_size=hidden_dim, 
             num_layers=num_layers, 
             batch_first=True, 
-            dropout=0.2
+            dropout=0.15
         )
         self.fc = nn.Sequential(
             nn.Linear(hidden_dim, 16),
             nn.ReLU(),
-            nn.Dropout(0.1),
             nn.Linear(16, 1)
         )
     def forward(self, x):
@@ -66,12 +64,11 @@ class CardiovascularGRU(nn.Module):
             hidden_size=hidden_dim, 
             num_layers=num_layers, 
             batch_first=True, 
-            dropout=0.2
+            dropout=0.15
         )
         self.fc = nn.Sequential(
             nn.Linear(hidden_dim, 16),
             nn.ReLU(),
-            nn.Dropout(0.1),
             nn.Linear(16, 1)
         )
     def forward(self, x):

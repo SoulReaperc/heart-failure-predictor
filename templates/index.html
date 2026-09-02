@@ -11,7 +11,7 @@
         :root {
             --bg-dark: #070a13;
             --bg-card: rgba(16, 24, 40, 0.75);
-            --bg-card-hover: rgba(22, 32, 54, 0.9);
+            --bg-card-hover: rgba(22, 32,d 54, 0.9);
             --bg-input: rgba(10, 16, 30, 0.85);
             
             --border-card: rgba(255, 255, 255, 0.08);
@@ -884,9 +884,9 @@
         <!-- TAB 2: MODEL BENCHMARKS -->
         <section id="tab-benchmarks" class="tab-pane">
             <div class="glass-card">
-                <h3 style="font-family: 'Outfit'; font-size: 1.3rem; margin-bottom: 6px;">Multi-Model Benchmark Matrix (Framingham Cohort, n=848)</h3>
+                <h3 style="font-family: 'Outfit'; font-size: 1.3rem; margin-bottom: 6px;">Multi-Model Benchmark Matrix (Framingham Cohort, 70:30 Ratio, n=1,272)</h3>
                 <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 20px;">
-                    Standardized evaluation comparing Deep Learning architectures against classical ML baselines.
+                    Standardized evaluation comparing Deep Learning architectures against classical ML baselines across Sensitivity (TPR), Specificity (TNR), and Deduced Error Rate.
                 </p>
 
                 <div class="table-wrap">
@@ -895,7 +895,9 @@
                             <tr>
                                 <th>Model Architecture</th>
                                 <th>Accuracy</th>
-                                <th>Sensitivity / Recall</th>
+                                <th>Sensitivity (TPR)</th>
+                                <th>Specificity (TNR)</th>
+                                <th>Error Rate (%)</th>
                                 <th>Precision</th>
                                 <th>F1-Score</th>
                                 <th>ROC-AUC</th>
@@ -907,7 +909,7 @@
                         <tbody>
                             {% if metrics %}
                                 {% for name, m in metrics.items() %}
-                                {% set is_top = ('Artificial Neural Network' in name) %}
+                                {% set is_top = ('XGBoost' in name) %}
                                 {% set is_active = (selected_model == 'ann' and 'Artificial Neural Network' in name) or 
                                                    (selected_model == 'lstm' and 'Long Short-Term Memory' in name) or 
                                                    (selected_model == 'gru' and 'Gated Recurrent Unit' in name) or 
@@ -916,15 +918,21 @@
                                     <td>
                                         <strong>{{ name }}</strong>
                                         {% if is_top %}
-                                        <span class="badge-pill pill-gold">🏆 Top Best Model</span>
+                                        <span class="badge-pill pill-gold">🏆 Champion (85.61% Acc)</span>
                                         {% endif %}
                                         {% if is_active %}
                                         <span class="badge-pill pill-active">⚡ Active In-Use</span>
                                         {% endif %}
                                     </td>
-                                    <td>{{ m.accuracy }}%</td>
+                                    <td><strong>{{ m.accuracy }}%</strong></td>
                                     <td>
-                                        <span class="badge-pill pill-green">{{ m.recall }}%</span>
+                                        <span class="badge-pill pill-green">{{ m.sensitivity }}%</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge-pill pill-blue">{{ m.specificity }}%</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge-pill" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35);">{{ m.error_rate }}%</span>
                                     </td>
                                     <td>{{ m.precision }}%</td>
                                     <td>{{ m.f1_score }}%</td>
@@ -946,9 +954,21 @@
         <!-- TAB 3: DIAGNOSTIC PLOTS -->
         <section id="tab-diagnostics" class="tab-pane">
             <div class="gallery-grid">
+                <!-- HERO CARD: BEST MODEL PIE CHART -->
+                <div class="gallery-card" style="grid-column: 1 / -1; border-color: rgba(56, 189, 248, 0.4); background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95)); box-shadow: 0 10px 30px rgba(2, 132, 199, 0.15);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <h4 style="color: #38bdf8; font-size: 1.15rem; margin: 0;">🏆 Best Model Diagnostic Breakdown & Deduced Error Rate</h4>
+                        <span class="badge-pill pill-gold">Champion Model: Tuned XGBoost (85.61% Accuracy)</span>
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.88rem; margin-bottom: 14px;">
+                        Dual-panel clinical analysis: <strong>Left</strong> shows exact diagnostic outcome distribution (1,073 True Negatives, 16 True Positives, 6 False Alarms, 177 Missed Cases). <strong>Right</strong> illustrates Peak Overall Prediction Accuracy (<strong>85.61%</strong>) versus Minimal Deduced Percentage Error (<strong>14.39%</strong>), with Specificity (99.44%) and Precision (<strong>72.73%</strong>) on the held-out test cohort (n=1,272, 70:30 split).
+                    </p>
+                    <img src="/static/best_model_piechart.png" alt="Best Model Pie Chart" style="max-height: 480px; object-fit: contain; width: 100%; border-radius: 8px;">
+                </div>
+
                 <div class="gallery-card">
                     <h4>Multi-Model ROC Curves</h4>
-                    <p>Comparison of Sensitivity vs Specificity across discrimination thresholds.</p>
+                    <p>Comparison of Sensitivity vs Specificity across discrimination thresholds (70:30 Split).</p>
                     <img src="/static/roc_curves.png" alt="ROC Curves">
                 </div>
 
@@ -971,8 +991,8 @@
                 </div>
 
                 <div class="gallery-card" style="grid-column: 1 / -1;">
-                    <h4>Test Cohort Confusion Matrix Matrix</h4>
-                    <p>True vs. predicted classification counts on the held-out test cohort (n=848).</p>
+                    <h4>Test Cohort Confusion Matrix Grid</h4>
+                    <p>True vs. predicted classification counts on the held-out test cohort (n=1,272, 70:30 Ratio).</p>
                     <img src="/static/confusion_matrices.png" alt="Confusion Matrices">
                 </div>
             </div>
@@ -981,12 +1001,22 @@
         <!-- TAB 4: PROTOCOL & DATASET -->
         <section id="tab-protocol" class="tab-pane">
             <div class="glass-card" style="line-height: 1.6; font-size: 0.92rem;">
-                <h3 style="font-family: 'Outfit'; font-size: 1.3rem; margin-bottom: 14px;">Clinical Study Protocol & Deep Learning Framework</h3>
+                <h3 style="font-family: 'Outfit'; font-size: 1.3rem; margin-bottom: 14px;">Clinical Study Protocol & Preprocessing Framework (70:30 Ratio)</h3>
                 <p style="margin-bottom: 12px; color: var(--text-secondary);">
                     <strong>Framingham Heart Study:</strong> One of the most authoritative prospective cardiovascular epidemiological studies in medical history. The model uses 15 clinical parameters across 4,240 patient records to estimate 10-year risk of developing Coronary Heart Disease (`TenYearCHD`).
                 </p>
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 14px 18px; border-radius: 8px; border-left: 3px solid #38bdf8; margin-bottom: 14px;">
+                    <strong style="color: #38bdf8;">End-to-End Preprocessing Pipeline:</strong>
+                    <ul style="margin: 8px 0 0 18px; color: #cbd5e1; font-size: 0.88rem;">
+                        <li><strong>Missing Value Audit:</strong> 7 features had missing values (Glucose 9.15%, Education 2.48%, BPMeds 1.25%, TotChol 1.18%, Cigs/Day 0.68%, BMI 0.45%, HeartRate 0.02%).</li>
+                        <li><strong>Stratified 70:30 Split:</strong> 2,968 training cases (70%) and 1,272 testing cases (30%) preserving identical 15.2% CHD disease prevalence.</li>
+                        <li><strong>Leak-Free Median Imputation:</strong> SimpleImputer fitted strictly on training data and transformed onto test data.</li>
+                        <li><strong>Feature Standardization:</strong> StandardScaler (mean=0, std=1) fitted solely on the training partition.</li>
+                        <li><strong>Class Imbalance Mitigation:</strong> Positive weight $w_{\text{pos}} = 5.581$ embedded into PyTorch weighted BCE loss and ML classifiers.</li>
+                    </ul>
+                </div>
                 <p style="margin-bottom: 12px; color: var(--text-secondary);">
-                    <strong>PyTorch Neural Network Architecture:</strong> 4 dense layers (15 → 64 → 32 → 16 → 1) with Batch Normalization, Dropout ($0.3/0.2/0.1$), and weighted Binary Cross-Entropy Loss ($w_{\text{pos}} = 5.59$) to overcome the natural 84.8% vs 15.2% class imbalance and maximize clinical screening sensitivity.
+                    <strong>PyTorch Neural Network Architecture:</strong> 4 dense layers (15 → 64 → 32 → 16 → 1) with Batch Normalization, Dropout ($0.3/0.2/0.1$), and weighted Binary Cross-Entropy Loss ($w_{\text{pos}} = 5.581$) to overcome the natural 84.8% vs 15.2% class imbalance and maximize clinical screening sensitivity.
                 </p>
                 <p style="color: var(--text-secondary);">
                     <strong>Clinical Guidelines Integration:</strong> Risk alerts evaluate blood pressure against standard AHA/ACC 2024 hypertension classifications, lipid risk criteria ($>240$ mg/dL), and glycemic thresholds ($>126$ mg/dL).
