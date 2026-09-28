@@ -1,0 +1,30 @@
+[
+    {
+        "Confidence Tier": "Standard Unrestricted Cohort",
+        "Accuracy (%)": 85.53,
+        "Error Rate (%)": 14.47,
+        "Patient Coverage (%)": 100.0,
+        "Decisive Patients Evaluated": 1272
+    },
+    {
+        "Confidence Tier": "Moderate Confidence Gating (<=0.20 or >=0.80)",
+        "Accuracy (%)": 88.59,
+        "Error Rate (%)": 11.41,
+        "Patient Coverage (%)": 75.1,
+        "Decisive Patients Evaluated": 955
+    },
+    {
+        "Confidence Tier": "High-Confidence Clinical Gating (<=0.15 or >=0.85)",
+        "Accuracy (%)": 89.94,
+        "Error Rate (%)": 10.06,
+        "Patient Coverage (%)": 60.9,
+        "Decisive Patients Evaluated": 775
+    },
+    {
+        "Confidence Tier": "Ultra-High Confidence Decisive (<=0.10 or >=0.90)",
+        "Accuracy (%)": 92.79,
+        "Error Rate (%)": 7.21,
+        "Patient Coverage (%)": 42.5,
+        "Decisive Patients Evaluated": 541
+    }
+]

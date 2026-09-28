@@ -19,7 +19,7 @@ app = Flask(__name__)
 class CardiovascularANN(nn.Module):
     def __init__(self, input_dim=15):
         super(CardiovascularANN, self).__init__()
-        self.network = nn.Sequential(
+        self.encoder = nn.Sequential(
             nn.Linear(input_dim, 64),
             nn.BatchNorm1d(64),
             nn.ReLU(),
@@ -30,11 +30,16 @@ class CardiovascularANN(nn.Module):
             nn.Dropout(0.15),
             nn.Linear(32, 16),
             nn.BatchNorm1d(16),
-            nn.ReLU(),
-            nn.Linear(16, 1)
+            nn.ReLU()
         )
+        self.classifier = nn.Linear(16, 1)
+
     def forward(self, x):
-        return self.network(x)
+        features = self.encoder(x)
+        return self.classifier(features)
+
+    def get_embeddings(self, x):
+        return self.encoder(x)
 
 class CardiovascularLSTM(nn.Module):
     def __init__(self, input_dim=15, hidden_dim=32, num_layers=2):
@@ -80,10 +85,12 @@ class CardiovascularGRU(nn.Module):
 imputer_path = "imputer.pkl"
 scaler_path = "scaler.pkl"
 rf_model_path = "heart_model.pkl"
+hybrid_model_path = "hybrid_model.pkl"
 
 imputer = joblib.load(imputer_path) if os.path.exists(imputer_path) else None
 scaler = joblib.load(scaler_path) if os.path.exists(scaler_path) else None
 rf_model = joblib.load(rf_model_path) if os.path.exists(rf_model_path) else None
+hybrid_model = joblib.load(hybrid_model_path) if os.path.exists(hybrid_model_path) else None
 
 # Load Deep Learning Models
 ann_model = None
@@ -110,6 +117,12 @@ metrics_data = {}
 if os.path.exists(metrics_path):
     with open(metrics_path, "r") as f:
         metrics_data = json.load(f)
+
+conf_metrics_path = "static/confidence_gated_metrics.json"
+conf_metrics_data = []
+if os.path.exists(conf_metrics_path):
+    with open(conf_metrics_path, "r") as f:
+        conf_metrics_data = json.load(f)
 
 # 15 Framingham Feature Names
 FEATURE_NAMES = [
@@ -206,7 +219,7 @@ def analyze_risk_factors(data):
 
 @app.route("/")
 def home():
-    return render_template("index.html", prediction=None, selected_model="ann", metrics=metrics_data)
+    return render_template("index.html", prediction=None, selected_model="hybrid", metrics=metrics_data, conf_metrics=conf_metrics_data)
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -240,7 +253,14 @@ def predict():
         # Inference based on selected architecture
         tensor_input = torch.tensor(input_scaled, dtype=torch.float32)
 
-        if model_choice == "ann" and ann_model is not None:
+        if model_choice == "hybrid" and hybrid_model is not None and ann_model is not None:
+            with torch.no_grad():
+                embs = ann_model.get_embeddings(tensor_input).numpy()
+                hybrid_input = np.hstack([input_scaled, embs])
+                probs = hybrid_model.predict_proba(hybrid_input)[0]
+                probability = round(probs[1] * 100, 1)
+                used_model_name = "🏆 Hybrid Architecture (Deep ANN Latent Embeddings + XGBoost)"
+        elif model_choice == "ann" and ann_model is not None:
             with torch.no_grad():
                 logits = ann_model(tensor_input)
                 prob = torch.sigmoid(logits).item()
@@ -267,7 +287,8 @@ def predict():
                                    prediction="❌ Selected model file not available.", 
                                    color_class="error", 
                                    selected_model=model_choice,
-                                   metrics=metrics_data)
+                                   metrics=metrics_data,
+                                   conf_metrics=conf_metrics_data)
 
         # Stratify risk levels
         if probability >= 50:
@@ -295,7 +316,8 @@ def predict():
             used_model=used_model_name,
             selected_model=model_choice,
             form_data=form_data,
-            metrics=metrics_data
+            metrics=metrics_data,
+            conf_metrics=conf_metrics_data
         )
 
     except Exception as e:

@@ -817,7 +817,8 @@
                             <div class="model-picker-wrap">
                                 <label for="model_choice">Inference Engine:</label>
                                 <select id="model_choice" name="model_choice">
-                                    <option value="ann" {% if not selected_model or selected_model == 'ann' %}selected{% endif %}>🧠 PyTorch Artificial Neural Network (ANN)</option>
+                                    <option value="hybrid" {% if not selected_model or selected_model == 'hybrid' %}selected{% endif %}>🏆 Hybrid Model (Deep ANN + XGBoost)</option>
+                                    <option value="ann" {% if selected_model == 'ann' %}selected{% endif %}>🧠 PyTorch Artificial Neural Network (ANN)</option>
                                     <option value="lstm" {% if selected_model == 'lstm' %}selected{% endif %}>🔁 PyTorch Long Short-Term Memory (LSTM)</option>
                                     <option value="gru" {% if selected_model == 'gru' %}selected{% endif %}>⚡ PyTorch Gated Recurrent Unit (GRU)</option>
                                     <option value="rf" {% if selected_model == 'rf' %}selected{% endif %}>🌲 Random Forest Classifier (ML Baseline)</option>
@@ -909,8 +910,9 @@
                         <tbody>
                             {% if metrics %}
                                 {% for name, m in metrics.items() %}
-                                {% set is_top = ('XGBoost' in name) %}
-                                {% set is_active = (selected_model == 'ann' and 'Artificial Neural Network' in name) or 
+                                {% set is_top = (name == 'XGBoost') %}
+                                {% set is_active = (selected_model == 'hybrid' and 'Hybrid' in name) or
+                                                   (selected_model == 'ann' and 'Artificial Neural Network' in name) or 
                                                    (selected_model == 'lstm' and 'Long Short-Term Memory' in name) or 
                                                    (selected_model == 'gru' and 'Gated Recurrent Unit' in name) or 
                                                    (selected_model == 'rf' and 'Random Forest' in name) %}

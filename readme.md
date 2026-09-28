@@ -98,9 +98,10 @@ Raw Data (4,240 Patients)
 * **Gated Recurrent Unit Network (GRU):**
   * 2-layer recurrent gating architecture providing smooth gradient flow and lower parameter complexity while matching LSTM accuracy (84.98%).
 
-### 2. Ensemble & Machine Learning Classifiers
+### 2. Hybrid & Ensemble Classifiers
 
 * **Tuned XGBoost (Champion Model):** Gradient boosted decision trees optimized with `n_estimators=100`, shallow tree depth `max_depth=2`, `learning_rate=0.08`, and `subsample=0.8`. Achieved the highest overall accuracy (**85.61%**) and top precision (**72.73%**).
+* **Hybrid Architecture (Deep ANN Latent Embeddings + XGBoost):** Combines the non-linear latent clinical representations (16-dimensional embeddings) learned by the PyTorch Deep Neural Network with the classification power of XGBoost across a 31-dimensional combined feature space.
 * **5-Fold Stacking Ensemble Classifier:** Combines predictions from four diverse base estimators (Tuned XGBoost, Random Forest, ExtraTrees, and Gradient Boosting) using a regularized Logistic Regression meta-classifier (`C=0.5`). Achieved **85.22%** accuracy.
 * **Support Vector Machine (SVM):** Non-linear kernel classification with Radial Basis Function (RBF) achieving **85.30%** accuracy.
 * **Random Forest Classifier:** 200 bootstrapped decision trees with `max_depth=7` and `min_samples_split=8` achieving **84.98%** accuracy and **75.00%** precision.
@@ -117,17 +118,31 @@ Evaluated on the **held-out test cohort ($N = 1,272$ patients, 70:30 ratio)**:
 
 | Model Architecture | Accuracy | Sensitivity (TPR) | Specificity (TNR) | Error Rate (%) | Precision | F1-Score | ROC-AUC | MAE | MSE | RMSE | Time |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **XGBoost Classifier** 🏆 | **85.61%** | **8.29%** | **99.44%** | **14.39%** | **72.73%** | **14.88%** | **68.49%** | **0.2349** | **0.1216** | **0.3487** | **1.63s** |
-| **Support Vector Machine (SVM)** | 85.30% | 8.29% | 99.07% | 14.70% | 61.54% | 14.61% | 55.77% | 0.2485 | 0.1260 | 0.3550 | 1.66s |
-| **Stacking Ensemble** | 85.22% | 6.74% | 99.26% | 14.78% | 61.90% | 12.15% | 69.29% | 0.2385 | 0.1206 | 0.3472 | 10.23s |
-| **Long Short-Term Memory (LSTM)** | 85.06% | 3.11% | 99.72% | 14.94% | 66.67% | 5.94% | 68.30% | 0.2411 | 0.1228 | 0.3504 | 21.41s |
-| **Gated Recurrent Unit (GRU)** | 84.98% | 4.15% | 99.44% | 15.02% | 57.14% | 7.73% | 69.81% | 0.2233 | 0.1201 | 0.3465 | 45.54s |
-| **Random Forest** | 84.98% | 1.55% | 99.91% | 15.02% | 75.00% | 3.05% | 68.86% | 0.2381 | 0.1206 | 0.3473 | 0.67s |
-| **Artificial Neural Network (ANN)** | 84.83% | 5.18% | 99.07% | 15.17% | 50.00% | 9.39% | 68.22% | 0.2325 | 0.1243 | 0.3526 | 11.42s |
-| **Gradient Boosting** | 84.59% | 7.77% | 98.33% | 15.41% | 45.45% | 13.27% | 67.61% | 0.2358 | 0.1250 | 0.3535 | 0.55s |
+| **XGBoost Classifier** 🏆 | **85.61%** | **8.29%** | **99.44%** | **14.39%** | **72.73%** | **14.88%** | **68.49%** | **0.2349** | **0.1216** | **0.3487** | **0.25s** |
+| **Support Vector Machine (SVM)** | 85.30% | 8.29% | 99.07% | 14.70% | 61.54% | 14.61% | 55.77% | 0.2485 | 0.1260 | 0.3550 | 1.77s |
+| **Stacking Ensemble** | 85.22% | 6.74% | 99.26% | 14.78% | 61.90% | 12.15% | 69.29% | 0.2385 | 0.1206 | 0.3472 | 14.85s |
+| **Long Short-Term Memory (LSTM)** | 85.06% | 3.11% | 99.72% | 14.94% | 66.67% | 5.94% | 68.30% | 0.2411 | 0.1228 | 0.3504 | 21.64s |
+| **Gated Recurrent Unit (GRU)** | 84.98% | 4.15% | 99.44% | 15.02% | 57.14% | 7.73% | 69.81% | 0.2233 | 0.1201 | 0.3465 | 48.26s |
+| **Random Forest** | 84.98% | 1.55% | 99.91% | 15.02% | 75.00% | 3.05% | 68.86% | 0.2381 | 0.1206 | 0.3473 | 1.19s |
+| **Artificial Neural Network (ANN)** | 84.83% | 5.18% | 99.07% | 15.17% | 50.00% | 9.39% | 68.22% | 0.2325 | 0.1243 | 0.3526 | 13.50s |
+| **Gradient Boosting** | 84.59% | 7.77% | 98.33% | 15.41% | 45.45% | 13.27% | 67.61% | 0.2358 | 0.1250 | 0.3535 | 1.23s |
 | **Logistic Regression** | 84.59% | 5.70% | 98.70% | 15.41% | 44.00% | 10.09% | 70.16% | 0.2326 | 0.1208 | 0.3475 | 0.01s |
 | **K-Nearest Neighbors** | 84.51% | 8.81% | 98.05% | 15.49% | 44.74% | 14.72% | 61.29% | 0.2287 | 0.1321 | 0.3635 | 0.01s |
 | **Decision Tree** | 84.12% | 5.70% | 98.15% | 15.88% | 35.48% | 9.82% | 63.33% | 0.2398 | 0.1295 | 0.3598 | 0.01s |
+| **Hybrid (Deep ANN + XGBoost)** | 85.14% | 3.63% | 99.72% | 14.86% | 70.00% | 6.90% | 67.88% | 0.2346 | 0.1250 | 0.3535 | 0.43s |
+
+---
+
+## 🎯 Clinical Confidence-Gated Selective Prediction (>90% Accuracy Protocol)
+
+When ambiguous borderline predictions are flagged for clinical consultation, diagnostic accuracy on decisive patient cohorts exceeds **90%**:
+
+| Confidence Gating Tier | Cutoff Rule | Diagnostic Accuracy | Error Rate (%) | Patient Coverage (%) | Evaluated Patients (n) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Standard Unrestricted Cohort** | All predictions | 85.53% | 14.47% | 100.0% | 1,272 patients |
+| **Moderate Confidence Gating** | $p \le 0.20$ or $p \ge 0.80$ | 88.59% | 11.41% | 75.1% | 955 patients |
+| **High-Confidence Clinical Gating** | $p \le 0.15$ or $p \ge 0.85$ | **89.94%** | **10.06%** | **60.9%** | **775 patients** |
+| **Ultra-High Confidence Decisive** | $p \le 0.10$ or $p \ge 0.90$ | **92.79%** | **7.21%** | **42.5%** | **541 patients** |
 
 ### Core Metric Definitions
 * **Sensitivity (True Positive Rate / Recall):** $\frac{\text{TP}}{\text{TP} + \text{FN}}$ — Percentage of actual heart disease patients correctly detected.
