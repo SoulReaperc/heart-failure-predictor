@@ -1,10 +1,8 @@
 import os
-import sys
-import site
-sys.path.append(site.getusersitepackages())
-
 import json
+import warnings
 import joblib
+warnings.filterwarnings('ignore', category=UserWarning, module='sklearn')
 import numpy as np
 import pandas as pd
 import torch
@@ -325,7 +323,8 @@ def predict():
                                prediction=f"⚠️ Prediction Error: {str(e)}", 
                                color_class="error", 
                                selected_model=request.form.get("model_choice", "ann"),
-                               metrics=metrics_data)
+                               metrics=metrics_data,
+                               conf_metrics=conf_metrics_data)
 
 @app.route("/api/metrics", methods=["GET"])
 def get_metrics():
